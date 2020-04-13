@@ -1,0 +1,55 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  height: 100vh;
+  margin: 0;
+}
+
+
+.grid-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid {
+  align-items: center;
+  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-wrap: wrap;
+  height: 100%;
+  justify-content: center;
+  height: 500px;
+  width: 500px;
+}
+
+.grid div {
+  border: 1px solid lightgrey;
+  flex-grow: 1;
+  height: 10%;
+  width: 10%;
+}
+
+.grid div.playerShip {
+  background-image: url('../assets/ship_civ_yacht.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.grid div.invaderShip {
+  background-image: url('../assets/ship_dart_zom.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.grid div.lazer {
+  background-image: url('../assets/laser-beam-sprite-png-6.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer;
+}
