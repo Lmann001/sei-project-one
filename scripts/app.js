@@ -3,7 +3,7 @@ function  init() {
 
   const grid = document.querySelector('.grid')
   const cells = []
-  
+  const startBtn = document.querySelector('#start')
   
 
   //* Grid Variables
@@ -13,7 +13,9 @@ function  init() {
   const cellCount = width * height
 
   //* Game Variables
-
+  //? Score
+  // let result = 0
+  
   //? Player Ship
   let playerShipPosition = 144
   
@@ -27,6 +29,8 @@ function  init() {
     }
     cells[startingPosition].classList.add('playerShip')
   }
+
+
   function handleKeyUp(event) {
     cells[playerShipPosition].classList.remove('playerShip')
     const x = playerShipPosition % width
@@ -43,30 +47,64 @@ function  init() {
   creategrid(playerShipPosition)
 
   //? Alien Ship
-  const invaderShipPosition = 0
+  let currentInvaderIndex = 0
+  const invaderShipPositions = [
+    0, 1, 2, 3, 4, 5, 10, 11, 12, 13, 14, 15
+  ]
+  
+  invaderShipPositions.forEach(invaderShip => cells[currentInvaderIndex + invaderShip].classList.add('invaderShip') )
+ 
+  function moveInvaders() {
+    let invaderId 
+    let direction = 1 
+    cells[invaderShipPositions].classList.remove('invaderShip')
+    const leftEdge = invaderShipPositions[0] % width === 0
+    const rightEdge = invaderShipPositions[invaderShipPositions.length - 1] % width === width - 1
 
-  let num = 0
-  const invaderTime = setInterval(() => {
-    console.log(num)
-    num++
-    if (num > 139) {
-      clearInterval(invaderTime)
+    if ((leftEdge && direction === -1) || (rightEdge && direction === 1)){
+      direction = width
+    } else if (direction === width ){
+      if (leftEdge) direction = 1
+      else direction
     }
-  }, 200)
+    for (let i = 0; i <= invaderShipPositions.length - 1; i++) {
+      cells[invaderShipPositions[i]].classList.remove('invaderShip')
+    }
+    for (let i = 0; i <= invaderShipPositions.length - 1; i++) {
+      invaderShipPositions[i] += direction
+    }
+    for (let i = 0; i <= invaderShipPositions.length - 1; i++) {
+      cells[invaderShipPositions].classList.add('invaderShip')
+    }
+  }
+  invaderId = setInterval(moveInvaders, 500
+
+
+  // invaderShip.forEach(invader => cells[invaderShipPosition + invader].classlist.add('invaderShip'))
+
+  // let num = 0
+  // const invaderTime = setInterval(() => {
+  //   console.log(num)
+  //   num++
+  //   if (num > 139) {
+  //     clearInterval(invaderTime)
+  //   }
+  // }, 200)
 
 
   // function
 
-  cells[invaderShipPosition].classList.add('invaderShip')
 
 
   //? Lazer PewPew
 
-  let lazerPosition = playerShipPosition - 10
+  let lazerPosition = playerShipPosition - width
 
   function handleKeyUp2(event) {
     cells[lazerPosition].classList.remove('lazer')
     const x = lazerPosition % width
+    const y = Math.floor(lazerPosition / width)
+
     
     switch (event.keyCode) {
       case 39:
@@ -76,15 +114,15 @@ function  init() {
         if (x > 0) lazerPosition--
         break 
       case 32:
-        if (x > 0) lazerPosition - width
+        if (y > 0) lazerPosition -= width
     }
     cells[lazerPosition].classList.add('lazer')
   }
 
 
-  function lazerFired(event) {
+  // function lazerFired(event) {
     
-  }
+  // }
   // let num2 = lazerPosition
   // const lazerTime = setInterval(() => {
   //   console.log(num2)
@@ -110,7 +148,9 @@ function  init() {
 
   //* Event Listeners
 
-  document.addEventListener('keyup', handleKeyUp)
-  document.addEventListener('keyup', handleKeyUp2)
+  document.addEventListener('keydown', handleKeyUp)
+  document.addEventListener('keydown', handleKeyUp2)
+  document.addEventListener('click', startGame)
+  // document.addEventListener('keyup', lazerTimer)
 }
 window.addEventListener('DOMContentLoaded', init)
