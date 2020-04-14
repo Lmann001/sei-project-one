@@ -56,7 +56,14 @@ body {
 }
 
 .grid div.boomOne {
-  background-image: url('../assets/laser-beam-sprite-png-6.png');
+  background-image: url('../assets/explosion0.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer;
+}
+
+.grid div.boomTwo {
+  background-image: url('../assets/explosion1.png');
   background-repeat: no-repeat;
   background-size: contain;
   cursor: pointer;

@@ -4,7 +4,8 @@ function  init() {
   const grid = document.querySelector('.grid')
   const cells = []
   const startBtn = document.querySelector('#start')
-  
+  let timerId = 0
+  let direction = 1 
 
   //* Grid Variables
 
@@ -49,35 +50,42 @@ function  init() {
   //? Alien Ship
   let currentInvaderIndex = 0
   const invaderShipPositions = [
-    0, 1, 2, 3, 4, 5, 10, 11, 12, 13, 14, 15
+    0, 1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24, 25, 26
   ]
   
   invaderShipPositions.forEach(invaderShip => cells[currentInvaderIndex + invaderShip].classList.add('invaderShip') )
  
   function moveInvaders() {
-    let invaderId 
-    let direction = 1 
-    cells[invaderShipPositions].classList.remove('invaderShip')
-    const leftEdge = invaderShipPositions[0] % width === 0
-    const rightEdge = invaderShipPositions[invaderShipPositions.length - 1] % width === width - 1
-
-    if ((leftEdge && direction === -1) || (rightEdge && direction === 1)){
+    removeInvaders()
+    if (invaderShipPositions[0] > width * width - width) {
+      gameOver ()
+    }  else if (invaderShipPositions[0] % width === 3 && direction === 1) {
       direction = width
-    } else if (direction === width ){
-      if (leftEdge) direction = 1
-      else direction
+    } else if (invaderShipPositions[0] % width === 3 && direction === width) {        
+      direction = -1
+    } else if (invaderShipPositions[0] % width === 0 && direction === -1) {
+      direction = width
+    } else if (invaderShipPositions[0] % width === 0 && direction === width) {
+      direction = 1
     }
-    for (let i = 0; i <= invaderShipPositions.length - 1; i++) {
-      cells[invaderShipPositions[i]].classList.remove('invaderShip')
-    }
-    for (let i = 0; i <= invaderShipPositions.length - 1; i++) {
-      invaderShipPositions[i] += direction
-    }
-    for (let i = 0; i <= invaderShipPositions.length - 1; i++) {
-      cells[invaderShipPositions].classList.add('invaderShip')
-    }
+    addInvaders()
   }
-  invaderId = setInterval(moveInvaders, 500
+  //* REMOVE INVADERS CLASS --------------------------------------------------
+  function removeInvaders() {
+    invaderShipPositions.forEach(invader =>
+      cells[invader].classList.remove('invaders'))
+  }
+  //* ADD INVADERS CLASS ------------------------------------------------------
+  function addInvaders() { // draws the invaders back on their new position on the grid
+    currentInvaderIndex = invaderShipPositions.map(a => a + direction)
+    invaderShipPositions.forEach(invader => {
+      cells[invader].classList.add('invaders')
+    })
+  }
+  timerId = setInterval(moveInvaders, 1000)
+  // let lazerTimer   
+  // if (event.keyCode === 32) {
+  //   lazerTimer = setInterval(lazerMoves, 100)
 
 
   // invaderShip.forEach(invader => cells[invaderShipPosition + invader].classlist.add('invaderShip'))
@@ -96,28 +104,54 @@ function  init() {
 
 
 
-  //? Lazer PewPew
+  //? Lazer PewPew Boom
+  function lazerFire(event) {
+    let lazerPosition = playerShipPosition
+    let lazerTimer   
+    if (event.keyCode === 32) {
+      lazerTimer = setInterval(lazerMoves, 100)
+      // * function to shoot and remove invaders
+      function lazerMoves() {
+        cells[lazerPosition].classList.remove('lazer')
+        lazerPosition -= width
+        console.log(lazerPosition)
+        cells[lazerPosition].classList.add('lazer')
+        if (cells[lazerPosition].classList.contains('invaderShip')) {
+            cells[lazerPosition].classList.remove('lazer')
+            cells[lazerPosition].classList.remove('invaderShip')
+            cells[lazerPosition].classList.add('boomOne')
+            clearInterval(lazerTimer)
+            setTimeout(() => {
+              cells[lazerPosition].classList.remove('boomOne')
+            }, 250);
+          } 
+        if (lazerPosition < width) {
+            cells[lazerPosition].classList.remove('lazer')
+            clearInterval(lazerTimer)
+        }
+      } 
+    }
+  }  
+  // let lazerPosition = playerShipPosition - width
 
-  let lazerPosition = playerShipPosition - width
-
-  function handleKeyUp2(event) {
-    cells[lazerPosition].classList.remove('lazer')
-    const x = lazerPosition % width
-    const y = Math.floor(lazerPosition / width)
+  // function lazerFire(event) {
+  //   cells[lazerPosition].classList.remove('lazer')
+  //   const x = lazerPosition % width
+  //   const y = Math.floor(lazerPosition / width)
 
     
-    switch (event.keyCode) {
-      case 39:
-        if (x < width - 1) lazerPosition++
-        break
-      case 37:
-        if (x > 0) lazerPosition--
-        break 
-      case 32:
-        if (y > 0) lazerPosition -= width
-    }
-    cells[lazerPosition].classList.add('lazer')
-  }
+  //   switch (event.keyCode) {
+  //     case 39:
+  //       if (x < width - 1) lazerPosition++
+  //       break
+  //     case 37:
+  //       if (x > 0) lazerPosition--
+  //       break 
+  //     case 32:
+  //       if (y > 0) lazerPosition -= width
+  //   }
+  //   cells[lazerPosition].classList.add('lazer')
+  // }
 
 
   // function lazerFired(event) {
@@ -135,22 +169,11 @@ function  init() {
 
   // cells[lazerPosition].classList.add('pewPew')
 
-
-
-
-  // }
-  // function handleKeyUp(event) {
-  //   cells[playerShipPosition].classList.remove('invadership')
-  //   const x = playerShipPosition % width
-  //   switch (event.keyCode) {
-  //     cells[invaderShipPosition].classList.add('invaderShip')
-  //   }
-
   //* Event Listeners
 
   document.addEventListener('keydown', handleKeyUp)
-  document.addEventListener('keydown', handleKeyUp2)
-  document.addEventListener('click', startGame)
+  document.addEventListener('keydown', lazerFire)
+  // document.addEventListener('click', startGame)
   // document.addEventListener('keyup', lazerTimer)
 }
 window.addEventListener('DOMContentLoaded', init)
