@@ -5,7 +5,51 @@
 body {
   height: 100vh;
   margin: 0;
-  background-image: url('../assets/at7bwrtxges41.jpg');
+  background-image: url('../assets/wp2555888-space-background.png');
+  background-position: center;
+  background-attachment: fixed;
+}  
+
+h1 {
+font-size: 75px;
+color: rgb(68, 42, 172); 
+background: linear-gradient(#92c8f4, #545dc2);
+font-family: 'Orbitron', sans-serif;
+font-weight: 800 ;
+display: flex;
+flex-wrap: wrap;
+justify-content: center;
+}
+
+button {
+font-family: 'Orbitron', sans-serif;
+display: flex;
+font-size: 25px;
+color: slategray;
+}
+
+.Buttons {
+display: flex;
+flex-wrap: wrap;
+justify-content: space-evenly;
+}
+
+
+h2 {
+font-family: 'Orbitron', sans-serif;
+display: flex;
+font-size: 40px;
+display: flex;
+justify-content: center;
+background: linear-gradient(#e66465, #ee4da8);
+}
+
+#score-display {
+  font-family: 'Orbitron', sans-serif;
+  display: flex;
+  font-size: 40px;
+  justify-content: center;
+  background: linear-gradient(#e66465, #ee4da8);
 }
 
 
@@ -14,6 +58,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  border-radius: 100px;
+  margin: 50px;
+  background-image: url('../assets/HD-Space-Backgrounds.jpg') ;
 }
 
 .grid {
@@ -25,13 +72,18 @@ body {
   justify-content: center;
   height: 500px;
   width: 500px;
+  background-image: url('../assets/giphy.gif');
+  background-attachment: fixed;
+  background-clip: contain;
+  background-size: inherit;
 }
 
 .grid div {
-  border: 1px solid lightgrey;
+  /* border: 1px solid lightgrey; */
   flex-grow: 1;
   height: 10%;
   width: 10%;
+  
 }
 
 .grid div.playerShip {
@@ -42,7 +94,7 @@ body {
 }
 
 .grid div.invaderShip {
-  background-image: url('../assets/ship_dart_zom.png');
+  background-image: url('../assets/germ1.png');
   background-repeat: no-repeat;
   background-size: contain;
   cursor: pointer;
