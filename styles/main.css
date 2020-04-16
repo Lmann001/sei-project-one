@@ -28,7 +28,7 @@ font-size: 25px;
 color: slategray;
 }
 
-.Buttons {
+.buttons {
 display: flex;
 flex-wrap: wrap;
 justify-content: space-evenly;
@@ -60,7 +60,7 @@ background: linear-gradient(#e66465, #ee4da8);
   align-items: center;
   border-radius: 100px;
   margin: 50px;
-  background-image: url('../assets/HD-Space-Backgrounds.jpg') ;
+    background-image: url('../assets/TerrificLightheartedGermanspaniel-small.gif');
 }
 
 .grid {
@@ -68,14 +68,11 @@ background: linear-gradient(#e66465, #ee4da8);
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2);
   display: flex;
   flex-wrap: wrap;
-  height: 100%;
+  height: 50%;
   justify-content: center;
-  height: 500px;
-  width: 500px;
-  background-image: url('../assets/giphy.gif');
+  height: 400px;
+  width: 1000px;
   background-attachment: fixed;
-  background-clip: contain;
-  background-size: inherit;
 }
 
 .grid div {
@@ -94,7 +91,7 @@ background: linear-gradient(#e66465, #ee4da8);
 }
 
 .grid div.invaderShip {
-  background-image: url('../assets/germ1.png');
+  background-image: url('../assets/ship_civ_yacht_zom.png');
   background-repeat: no-repeat;
   background-size: contain;
   cursor: pointer;
