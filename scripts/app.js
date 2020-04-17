@@ -8,7 +8,7 @@ function  init() {
   const scoreDisplay = document.querySelector('#score-display')
   const buttons = document.querySelectorAll('.controlButtons')
   const dangerZone = [140, 141, 142, 143, 144, 145, 146, 147, 148, 149]
-  // let timerId = null
+  let timerId = null
   let direction = 1 
   let gameRunning = false
 
@@ -97,13 +97,15 @@ function  init() {
     startGame()
     gameWinner()
 
-    const endPositionLocator = ((width * height) - width)
     removeInvaders()
-    if (invaderShipPositions[0] > endPositionLocator)  {
-      console.log(invaderShipPositions[0] > endPositionLocator)
-      clearInterval(moveInvaders)
+    const dangerZone = [140, 141, 142, 143, 144, 145, 146, 147, 148, 149]
+    const aliensInDangerZone = dangerZone.filter(index => invaderShipPositions.includes(index))
+    // console.log('areAliensInDangerZone', aliensInDangerZone)
+    // console.log('are there aliens in the danger zone?', aliensInDangerZone.length > 0)
+    if (aliensInDangerZone.length > 0)  {
+      clearInterval(timerId)
       window.alert('YOU SUCK! RELOAD AND TRY AGAIN?')
-      //? CURRENTLY NOT WORKING 101 to 104 ----------------
+      gameOver()
     }  else if (invaderShipPositions[0] % width === 3 && direction === 1) {
       direction = width
     } else if (invaderShipPositions[0] % width === 3 && direction === width) {        
@@ -116,12 +118,11 @@ function  init() {
     addInvaders()
     lastRow()
   }
-
   if (cells[playerShipPosition].classList.contains('invaderShip')) {
     cells[playerShipPosition].classList.remove('playerShip')
     cells[playerShipPosition].classList.remove('invaderShip')
     cells[playerShipPosition].classList.add('boomTwo')
-    clearInterval(moveInvaders)
+    clearInterval(timerId)
   }
   //? Remove Invaders from Cell-----------------------------------------
   function removeInvaders() {
@@ -133,9 +134,16 @@ function  init() {
     invaderShipPositions = invaderShipPositions.map(a => a + direction)
     invaderShipPositions.forEach(invader => {
       cells[invader].classList.add('invaderShip')
+      // console.log(invaderShipPositions)
     })
   }
-  setInterval(moveInvaders, 500)
+  if (invaderShipPositions.length <= 21 && invaderShipPositions.length >= 15) {
+    timerId = setInterval(moveInvaders, 500)
+  } else if (invaderShipPositions.length <= 14 && invaderShipPositions.length >= 8) {
+    timerId = setInterval(moveInvaders, 300)
+  } else if (invaderShipPositions.length <= 7) {
+    timerId = setInterval(moveInvaders, 10)
+  }
 
 
   //? Laser PewPew Boom ----- Fires,Starts Timer, Moves and Sound---------
@@ -165,6 +173,7 @@ function  init() {
         cells[lazerPosition].classList.remove('lazer')
         cells[lazerPosition].classList.remove('invaderShip')
         invaderShipPositions = invaderShipPositions.filter(invaderShip =>{
+
           return cells[invaderShip].classList.contains('invaderShip')
         })
         cells[lazerPosition].classList.add('boomOne')
@@ -220,10 +229,11 @@ function  init() {
   //     gameOver()
   //   }
   // }
+  //? ----- Redundant ----------
 
   function lastRow() {
-    const playerCollision = invaderShipPositions.every(invaderShip => {
-      return cells[invaderShip].classList.contains('playerShip')    
+    const playerCollision = invaderShipPositions.some(invaderShip => {
+      return cells[invaderShip].classList.contains('playerShip') //? includes/some comparison of dangerzone and aliens array   
     })
     if (playerCollision === true) {
       gameOver()
