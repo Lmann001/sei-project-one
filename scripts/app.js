@@ -7,10 +7,10 @@ function  init() {
   // const reloadBtn = document.querySelector('#reload')
   const scoreDisplay = document.querySelector('#score-display')
   const buttons = document.querySelectorAll('.controlButtons')
-  const dangerZone = [140, 141, 142, 143, 144, 145, 146, 147, 148, 149]
   let timerId = null
   let direction = 1 
   let gameRunning = false
+  let enemyFireTimerID = null
 
   //* Grid Variables
 
@@ -24,20 +24,25 @@ function  init() {
 
   //? Play sounds 
   function playSound() {
-    const sound = document.querySelector('audio')
-    sound.src = './assets/UfoArtic1.wav'
+    const sound = document.querySelector('.assetsounds')
+    sound.src = './assets/SISFXStart3.wav'
     sound.play()
-  //   const soundTrack = document.querySelector('audio')
-  //   sound.src = './assets/SoundTrack.wav'
-  //   sound.play()
+    console.log('Click')
+    const soundTrack = document.querySelector('.soundtrack')
+    soundTrack.src = './assets/SoundTrack.wav'
+    soundTrack.play()
+    console.log('Boom')
   }
 
   //? ----- CLICK TO START --------- 
   function startGame(event) {
-    gameRunning = true
-    const SoundTrack = document.querySelector('.soundtrack')
-  //   //? 
-  //   //? 
+    // // console.log('Click')
+    // gameRunning = true
+    // const soundTrack = document.querySelector('.soundtrack')
+    // soundTrack.src = './assets/SoundTrack.wav'
+    // soundTrack.play()
+  // //   //? 
+  // //   //? 
   }
 
   //? Player Ship
@@ -54,7 +59,7 @@ function  init() {
     cells[startingPosition].classList.add('playerShip')
   }
 
-
+  //? Movement ------  
   function handleKeyUp(event) {
     cells[playerShipPosition].classList.remove('playerShip')
     const x = playerShipPosition % width
@@ -67,7 +72,7 @@ function  init() {
         break 
 
     }
-    //? Handle Ship Collisions
+    //? Handle Ship Collisions -------------------------------
     cells[playerShipPosition].classList.add('playerShip')
     if (cells[playerShipPosition].classList.contains('invaderShip')) {
       cells[playerShipPosition].classList.remove('playerShip')
@@ -79,7 +84,7 @@ function  init() {
   creategrid(playerShipPosition)
 
   //? Alien Ship Index and Draw ------------------------------------------------
-  const currentInvaderIndex = 0
+  let currentInvaderIndex = 0
   let invaderShipPositions = [
     0, 1, 2, 3, 4, 5, 6, 10, 11, 12, 13, 14, 15, 16, 20, 21, 22, 23, 24, 25, 26
   ]
@@ -96,7 +101,6 @@ function  init() {
   function moveInvaders() {
     startGame()
     gameWinner()
-
     removeInvaders()
     const dangerZone = [140, 141, 142, 143, 144, 145, 146, 147, 148, 149]
     const aliensInDangerZone = dangerZone.filter(index => invaderShipPositions.includes(index))
@@ -104,26 +108,31 @@ function  init() {
     // console.log('are there aliens in the danger zone?', aliensInDangerZone.length > 0)
     if (aliensInDangerZone.length > 0)  {
       clearInterval(timerId)
+      cells[playerShipPosition].classList.remove('playerShip')
+      cells[playerShipPosition].classList.add('boomTwo')
+      gameRunning = false
       window.alert('YOU SUCK! RELOAD AND TRY AGAIN?')
       gameOver()
-    }  else if (invaderShipPositions[0] % width === 3 && direction === 1) {
+    }  else if (currentInvaderIndex % width === 3 && direction === 1) {
       direction = width
-    } else if (invaderShipPositions[0] % width === 3 && direction === width) {        
+    } else if (currentInvaderIndex % width === 3 && direction === width) {        
       direction = -1
-    } else if (invaderShipPositions[0] % width === 0 && direction === -1) {
+    } else if (currentInvaderIndex % width === 0 && direction === -1) {
       direction = width
-    } else if (invaderShipPositions[0] % width === 0 && direction === width) {
+    } else if (currentInvaderIndex % width === 0 && direction === width) {
       direction = 1
     }
     addInvaders()
-    lastRow()
+    // lastRow()
   }
+
   if (cells[playerShipPosition].classList.contains('invaderShip')) {
     cells[playerShipPosition].classList.remove('playerShip')
     cells[playerShipPosition].classList.remove('invaderShip')
     cells[playerShipPosition].classList.add('boomTwo')
     clearInterval(timerId)
   }
+
   //? Remove Invaders from Cell-----------------------------------------
   function removeInvaders() {
     invaderShipPositions.forEach(invader =>
@@ -132,6 +141,7 @@ function  init() {
   //? Replace Invaders in Next Cell----------------------------------------
   function addInvaders() {
     invaderShipPositions = invaderShipPositions.map(a => a + direction)
+    currentInvaderIndex = currentInvaderIndex + direction
     invaderShipPositions.forEach(invader => {
       cells[invader].classList.add('invaderShip')
       // console.log(invaderShipPositions)
@@ -144,6 +154,7 @@ function  init() {
   } else if (invaderShipPositions.length <= 7) {
     timerId = setInterval(moveInvaders, 10)
   }
+  //? NOT WORKING FOR INCREMENTAL TIMING
 
 
   //? Laser PewPew Boom ----- Fires,Starts Timer, Moves and Sound---------
@@ -153,7 +164,7 @@ function  init() {
     let lazerTimer = 0  
     if (event.keyCode === 32) {
       lazerTimer = setInterval(lazerMoves, 100)
-      const sound = document.querySelector('audio')
+      const sound = document.querySelector('.SFX')
       sound.src = './assets/LazerOption2.wav'
       sound.play() 
     }
@@ -177,7 +188,7 @@ function  init() {
           return cells[invaderShip].classList.contains('invaderShip')
         })
         cells[lazerPosition].classList.add('boomOne')
-        const sound = document.querySelector('audio')
+        const sound = document.querySelector('.SFX')
         sound.src = './assets/ExplodeShip.wav'
         sound.play()
         clearInterval(lazerTimer)
@@ -199,6 +210,38 @@ function  init() {
         clearInterval(lazerTimer)
       }
     } 
+  }
+
+  //? ENEMY FIRE MIGHT NOT BE FINISHED -------------
+  const randomAlien = Math.floor(Math.random() * invaderShipPositions.length)
+  let badLazerStart = invaderShipPositions[randomAlien] + width
+  if (!cells [badLazerStart].classList.contains('invaderShip')) {
+    cells[badLazerStart].classList.add('badLazer')
+  } else if (!cells[badLazerStart + width].classList.contains('invaderShip')) {
+    cells[badLazerStart].classList.add('badLazer')
+  } else {
+    cells[badLazerStart].classList.add('badLazer')
+  }
+
+  enemyFire()
+  enemyFireTimerID = setInterval(enemyFire, 150)
+
+  function enemyFire() {
+    cells[badLazerStart].classList.remove('badLazer')
+    if (badLazerStart <= 110) {
+      badLazerStart += width
+      cells[badLazerStart].classList.add('badLazer')
+      if (cells[badLazerStart].classList.contains('PlayerShip')) {
+        clearInterval(timerId)
+        cells[playerShipPosition].classList.remove('playerShip')
+        cells[playerShipPosition].classList.add('boomTwo')
+        gameRunning = false
+        window.alert('YOU SUCK! RELOAD AND TRY AGAIN?')
+        gameOver()
+      } else {
+        clearInterval(badLazerStart)
+      }
+    }
   }
 
   //? ------ WIN LOSE CONDITIONS -----------------------------------------------------
@@ -231,15 +274,15 @@ function  init() {
   // }
   //? ----- Redundant ----------
 
-  function lastRow() {
-    const playerCollision = invaderShipPositions.some(invaderShip => {
-      return cells[invaderShip].classList.contains('playerShip') //? includes/some comparison of dangerzone and aliens array   
-    })
-    if (playerCollision === true) {
-      gameOver()
-      gameRunning = false
-    } return
-  }
+  // function lastRow() {
+  //   const playerCollision = invaderShipPositions.some(invaderShip => {
+  //     return cells[invaderShip].classList.contains('playerShip') //? includes/some comparison of dangerzone and aliens array   
+  //   })
+  //   if (playerCollision === true) {
+  //     gameOver()
+  //     gameRunning = false
+  //   } return
+  // }
 
   //? Ends Game and returns to initial psotion
   function gameOver() {
@@ -254,9 +297,10 @@ function  init() {
       clearInterval(moveInvaders)
       clearInterval(lazerFire)
       clearInterval()
+      Audio.pause()
       for (let i = 0; i < 1000; i++) {
         clearInterval(i)
-        console.log('Game Lost')
+        // console.log('Game Lost')
       }
       
       window.alert('YOU LOST PLEASE RELOAD')
@@ -269,7 +313,7 @@ function  init() {
   document.addEventListener('keydown', handleKeyUp)
   document.addEventListener('keydown', lazerFire)
   startBtn.addEventListener('click', startGame)
-  // reloadBtn.addEventListener('click', resetGame)
+  // reloadBtn.addEventListener('click', resetGame) //? Ran out of time to implement a reload
   buttons.forEach(btn => {
     btn.addEventListener('click', playSound)
   })

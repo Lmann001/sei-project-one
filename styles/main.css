@@ -117,3 +117,10 @@ background: linear-gradient(#e66465, #ee4da8);
   background-size: contain;
   cursor: pointer;
 }
+
+.grid div.badLazer {
+  background-image: url('../assets/pngkit_red-flare-png_181608.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  cursor: pointer;
+}
