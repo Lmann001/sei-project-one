@@ -184,7 +184,6 @@ function  init() {
         cells[lazerPosition].classList.remove('lazer')
         cells[lazerPosition].classList.remove('invaderShip')
         invaderShipPositions = invaderShipPositions.filter(invaderShip =>{
-
           return cells[invaderShip].classList.contains('invaderShip')
         })
         cells[lazerPosition].classList.add('boomOne')
